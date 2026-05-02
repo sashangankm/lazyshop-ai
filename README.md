@@ -1,6 +1,6 @@
 # LazyShop AI: Voice Controlled Virtual Assistant for E-Commerce
 
-![LazyShop AI Banner](./images/banner.png)
+![LazyShop AI Banner](imgs/banner.png)
 
 ## Overview
 LazyShop is an AI-powered voice-controlled e-commerce platform designed to simplify online shopping through natural language interaction. By moving away from traditional text-based searches and manual navigation, this system allows users to perform tasks such as product search, filtering, cart management, and checkout using completely hands-free voice commands. 
