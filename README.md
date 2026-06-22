@@ -36,7 +36,7 @@ The system underwent rigorous testing for accuracy, latency, and reliability. Ke
 *   **NLP & Intent Detection:** 93% accuracy
 *   **Recommendation System:** 90% accuracy
 *   **Text-to-Speech:** 95% accuracy in generating natural, human-like responses
-*   
+    
 ![LazyShop Home Page](path/to/your/home-page-screenshot.png)
 *(Caption: LazyShop AI Home Page displaying personalized product recommendations)*
 
