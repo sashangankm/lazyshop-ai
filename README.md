@@ -52,6 +52,178 @@ The system underwent rigorous testing for accuracy, latency, and reliability. Ke
 ## Getting Started
 *(Add your installation instructions, environment variables, and `npm run dev` commands here once your repository is ready.)*
 
+## 🚀 Setup Instructions
+
+### Prerequisites
+- Node.js 18+ 
+- MongoDB Atlas account (free tier works)
+- OpenAI API key
+- Groq API key (free at console.groq.com)
+
+### Step 1 — Clone & Install
+
+```bash
+cd lazyshop
+npm install
+```
+
+### Step 2 — Environment Variables
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in `.env.local`:
+```env
+MONGODB_URI=mongodb+srv://...
+OPENAI_API_KEY=sk-...
+GROQ_API_KEY=gsk_...
+```
+
+### Step 3 — MongoDB Atlas Setup
+
+1. Go to [cloud.mongodb.com](https://cloud.mongodb.com)
+2. Create a free cluster
+3. Create database user (username + password)
+4. Whitelist IP: `0.0.0.0/0` (for development)
+5. Get connection string and paste into `MONGODB_URI`
+
+Collections are auto-created on first use: `users`, `carts`, `orders`, `ailogs`
+
+### Step 4 — Run Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+### Step 5 — Test the AI Assistant
+
+1. Click the orange orb (bottom-right)
+2. Try these commands:
+   - *"Show me electronics under $100"*
+   - *"Find wireless headphones"*
+   - *"Add the first headphones to my cart"*
+   - *"Show my cart"*
+   - *"Checkout"*
+3. Click the mic button for voice input
+
+---
+
+## 🤖 AI Provider System
+
+### Provider Routing Logic
+
+```
+User message
+    │
+    ▼
+OpenAI (gpt-4o-mini) ──→ Success? Return response
+    │ Fail (timeout/error/rate limit)
+    ▼
+Groq (llama-3.3-70b) ──→ Success? Return response
+    │ Fail
+    ▼
+Keyword Fallback ──→ Always returns something
+```
+
+### Function Calls Available
+
+| Function | Description |
+|----------|-------------|
+| `searchProducts` | Search by query, category, price |
+| `filterProducts` | Filter with sorting |
+| `addToCart` | Add product to cart |
+| `removeFromCart` | Remove from cart |
+| `updateCart` | Change quantity |
+| `getCart` | Navigate to cart |
+| `checkout` | Navigate to checkout |
+| `navigateTo` | Navigate to any page |
+
+### Cost Optimization
+- Uses `gpt-4o-mini` (not GPT-4) — ~100x cheaper
+- Conversation history limited to last 8 messages
+- Groq is **free tier** — no cost for fallback
+- Keyword fallback has zero API cost
+
+---
+
+## 🎤 Voice Interaction Examples
+
+| Say this | What happens |
+|----------|-------------|
+| "Find me a laptop stand" | Searches products for "laptop stand" |
+| "Show electronics under 50 dollars" | Filters electronics, max $50 |
+| "Add it to my cart" | Adds last shown product |
+| "What's in my cart?" | Navigates to cart page |
+| "Checkout" | Goes to checkout |
+| "Show me the home page" | Navigates home |
+
+---
+
+## 📊 Admin Dashboard
+
+Access at `/admin` to see:
+- Total orders & revenue
+- AI provider usage breakdown (OpenAI vs Groq vs Fallback)
+- All orders with status management
+- Update order status (pending → processing → shipped → delivered)
+
+---
+
+## 🔧 Extending the Project
+
+### Add a new AI function
+1. Add to `AI_FUNCTIONS` array in `lib/ai/service.ts`
+2. Add case in `executeFunctionCall` in `app/api/ai/route.ts`
+3. Handle result type in `AIAssistant.tsx`
+
+### Add more products
+Edit `data/products.json` — follows the `Product` type in `types/index.ts`
+
+### Switch to Supabase
+Replace `lib/db/mongodb.ts` with Supabase client. Update API routes to use Supabase queries instead of Mongoose.
+
+---
+
+## 🛡️ Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| Static product JSON | No DB needed for catalog, fast reads, easy to deploy |
+| MongoDB for dynamic data | Users/carts/orders need persistence |
+| Zustand over Redux | Simpler, less boilerplate, built-in persistence |
+| gpt-4o-mini | Cost-optimized, still very capable for ecommerce |
+| Web Speech API | No third-party cost, native browser support |
+| 3-layer fallback | 99.9% uptime even when AI providers are down |
+
+---
+
+## 📚 Tech Stack Summary
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 14 App Router + React 18 |
+| Styling | Tailwind CSS + Custom animations |
+| State | Zustand (with persistence) |
+| Database | MongoDB Atlas + Mongoose |
+| AI Primary | OpenAI GPT-4o-mini |
+| AI Fallback | Groq LLaMA-3.3-70b |
+| Voice STT | Web Speech API (browser native) |
+| Voice TTS | SpeechSynthesis API (browser native) |
+| Auth | Mock session (localStorage via Zustand) |
+| Deployment | Vercel (recommended) |
+
+---
+
+## 🚀 Deploy to Vercel
+
+```bash
+npm install -g vercel
+vercel --prod
+```
+
 ## Team & Credits
 Developed by:
 *   **Muthu Kumar B**
